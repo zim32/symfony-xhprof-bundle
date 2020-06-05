@@ -1,5 +1,5 @@
 {
-  "name": "zim32/xhprof-bundle",
+  "name": "zim32/xhprof-profiler-bundle",
   "description": "This bundle add additional XHProf menu item in symfony debug toolbar",
   "type": "symfony-bundle",
   "keywords": ["symfony", "bundle", "xhprof", "debug"],
