@@ -22,7 +22,9 @@
   },
   "require": {
     "php": "^7.0",
-    "ext-tideways_xhprof" : "*",
     "symfony/framework-bundle": "^4.0|^5.0"
+  },
+  "suggest" : {
+    "ext-tideways_xhprof" : "This package requires tideways_xhprof extension. Activate it for FPM only"
   }
 }
