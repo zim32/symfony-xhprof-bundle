@@ -1,0 +1,10 @@
+services:
+
+    zim.xhprof_data_collector:
+      class: Zim\XhProfBundle\DataCollector\XhProfDataCollector
+      public: true
+      tags:
+        -
+          name: data_collector
+          id: zim.xhprof_data_collector
+          template: '@ZimXhProf/Profiler/template.html.twig'

@@ -1,0 +1,108 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block menu %}
+    {# This left-hand menu appears when using the full-screen profiler. #}
+    <span class="label {{ collector.xhProfData|length == 0 ? 'disabled' : '' }}">
+        <span class="icon">
+            {% include '@ZimXhProf/Profiler/menu.icon.html.twig' %}
+        </span>
+        <strong>XHprof</strong>
+    </span>
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let parentSearchInput  = document.getElementById('zim_xhprof_panel__search_parent');
+            let childSearchInput   = document.getElementById('zim_xhprof_panel__search_child');
+            let caseSensitiveInput = document.getElementById('zim_xhprof_panel__case_sensitive');
+
+            let searchValue   = '';
+            let searchAttr    = '';
+            let caseSensitive = false;
+
+            parentSearchInput.addEventListener('input', function() {
+                searchValue = this.value;
+                searchAttr = 'data-title-parent';
+                filterRows();
+            });
+
+            childSearchInput.addEventListener('input', function() {
+                searchValue = this.value;
+                searchAttr = 'data-title-child';
+                filterRows();
+            });
+
+            caseSensitiveInput.addEventListener('change', function() {
+                caseSensitive = this.checked;
+                filterRows();
+            });
+
+            function filterRows() {
+                document.querySelectorAll('#zim_xhprof_panel__table > tbody > tr').forEach(item => {
+                    let needle   = searchValue;
+                    let haystack = item.getAttribute(searchAttr);
+
+                    if (false === caseSensitive) {
+                        needle = needle.toLowerCase();
+                        haystack = haystack.toLowerCase();
+                    }
+
+                    if (!haystack.includes(needle)) {
+                        item.style.display = 'none';
+                    } else {
+                        item.style.display = 'table-row';
+                    }
+                });
+            }
+        });
+
+    </script>
+{% endblock %}
+
+{% block panel %}
+
+    <h2>XHProf data</h2>
+
+    {% if collector.xhProfData|length == 0 %}
+        <div class="empty">
+            <p>No XHProf data available</p>
+        </div>
+    {% else %}
+        <div id="zim_xhprof_panel">
+
+            <div>
+                <label style="margin-left: 10px" for="zim_xhprof_panel__case_sensitive">Case sensitive</label>
+                <input style="margin-left: 4px; position: relative; top: 2px" id="zim_xhprof_panel__case_sensitive" type="checkbox" >
+            </div>
+
+            <table id="zim_xhprof_panel__table" style="margin-top: 20px">
+                <thead>
+                <tr>
+                    <th>Parent <input id="zim_xhprof_panel__search_parent" type="text" placeholder="Search..." style="padding: 4px 10px 4px 10px" /></th>
+                    <th>Child <input id="zim_xhprof_panel__search_child" type="text" placeholder="Search..." style="padding: 4px 10px 4px 10px" /></th>
+                    <th><a href="?panel={{ app.request.get('panel')}}&sortBy=wt&sortOrder={{ app.request.get('sortOrder') == 'asc' ? 'desc' : 'asc' }}">Wall time<br>sec (10<sup>-6</sup>) </a></th>
+                    <th><a href="?panel={{ app.request.get('panel')}}&sortBy=ct&sortOrder={{ app.request.get('sortOrder') == 'asc' ? 'desc' : 'asc' }}">Calls</a></th>
+                    <th><a href="?panel={{ app.request.get('panel')}}&sortBy=mu&sortOrder={{ app.request.get('sortOrder') == 'asc' ? 'desc' : 'asc' }}">Memory increment<br>bytes</a></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for data in collector.xhProfData  %}
+                    <tr data-title-parent="{{ data.parent|e('html_attr') }}" data-title-child="{{ data.child|e('html_attr') }}">
+                        <td style="font-size: 0.7rem;"><div title="{{ data.parent|e('html_attr') }}">{{ data.parent_trimmed }}</div></td>
+                        <td style="font-size: 0.7rem;"><div title="{{ data.child|e('html_attr') }}" >{{ data.child_trimmed }}</div></td>
+                        <td>{{ data.wt }}</td>
+                        <td>{{ data.ct }}</td>
+                        <td>{{ data.mu }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    {% endif %}
+
+{% endblock %}
