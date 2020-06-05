@@ -1,7 +1,8 @@
-###Installation
+### Installation
 
 #### Install tideways_xhprof extension
 See https://github.com/tideways/php-xhprof-extension for instructions
+
 #### Install this bundle
 
 ```
