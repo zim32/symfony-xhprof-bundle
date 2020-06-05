@@ -4,12 +4,22 @@
   "type": "symfony-bundle",
   "keywords": ["symfony", "bundle", "xhprof", "debug"],
   "license": "MIT",
+  "homepage": "https://github.com/zim32/symfony-xhprof-bundle",
   "authors": [
     {
       "name": "zim32",
       "email": "yurij.uvarov@gmail.com"
     }
   ],
+  "support": {
+    "email": "yurij.uvarov@gmail.com",
+    "issues": "https://github.com/zim32/symfony-xhprof-bundle/issues"
+  },
+  "autoload": {
+    "psr-4": {
+      "Zim\\XhProfBundle\\": ""
+    }
+  },
   "require": {
     "php": "^7.0",
     "ext-tideways_xhprof" : "*",
