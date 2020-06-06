@@ -17,7 +17,7 @@ class ZimXhProfBundle extends Bundle
             !$_ENV['ZIM_XHPROF_ENABLE'] ||
             false === extension_loaded('tideways_xhprof') ||
             false === $this->checkCondition()
-        ) {;
+        ) {
             return;
         }
 

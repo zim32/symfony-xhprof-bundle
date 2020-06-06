@@ -15,6 +15,11 @@ class XhProfDataCollector extends DataCollector
      */
     public function collect(Request $request, Response $response, \Throwable $exception = null)
     {
+        $this->data = [
+            'stats'    => [],
+            'env_data' => $this->collectEnvData()
+        ];
+
         if (false === ZimXhProfBundle::$needToCollect) {
             return;
         }
@@ -25,7 +30,7 @@ class XhProfDataCollector extends DataCollector
             return $b['wt'] - $a['wt'];
         });
 
-        $this->data = $data;
+        $this->data['stats'] = $data;
     }
 
     /**
@@ -46,7 +51,9 @@ class XhProfDataCollector extends DataCollector
 
     public function getXhProfData()
     {
-        foreach ($this->data as $execution => &$data) {
+        $stats = $this->data['stats'];
+
+        foreach ($stats as $execution => &$data) {
             $tmp = explode('==>', $execution);
 
             $data['parent'] = $tmp[0];
@@ -57,7 +64,7 @@ class XhProfDataCollector extends DataCollector
         }
 
         if (isset($_GET['sortBy'])) {
-            uasort($this->data, function(array $a, array $b) {
+            uasort($stats, function(array $a, array $b) {
                 if ($_GET['sortOrder'] === 'asc') {
                     return $a[$_GET['sortBy']] - $b[$_GET['sortBy']];
                 } else {
@@ -66,7 +73,21 @@ class XhProfDataCollector extends DataCollector
             });
         }
 
-        return $this->data;
+        return $stats;
+    }
+
+    public function getEnvData()
+    {
+        return $this->data['env_data'];
+    }
+
+    protected function collectEnvData()
+    {
+        return [
+            'ZIM_XHPROF_ENABLE'    => array_key_exists('ZIM_XHPROF_ENABLE', $_ENV) ? $_ENV['ZIM_XHPROF_ENABLE']  : 'NOT SET',
+            'ZIM_XHPROF_CONDITION' => array_key_exists('ZIM_XHPROF_CONDITION', $_ENV) ? $_ENV['ZIM_XHPROF_CONDITION']  : 'NOT SET',
+            'extension_loaded'     => extension_loaded('tideways_xhprof') ? 'YES' : 'NO',
+        ];
     }
 
     public function trimString(string $value)

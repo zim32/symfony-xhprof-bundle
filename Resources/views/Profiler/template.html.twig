@@ -64,8 +64,15 @@
 {% endblock %}
 
 {% block panel %}
+    {% set envData = collector.envData %}
 
     <h2>XHProf data</h2>
+
+    <div style="margin-top: 40px; margin-bottom: 40px">
+        <div><b>ZIM_XHPROF_ENABLE:</b>        {{ envData['ZIM_XHPROF_ENABLE'] }}</div>
+        <div><b>ZIM_XHPROF_CONDITION:</b>     {{ envData['ZIM_XHPROF_CONDITION'] }}</div>
+        <div><b>XHProf extension loaded:</b>  {{ envData['extension_loaded'] }}</div>
+    </div>
 
     {% if collector.xhProfData|length == 0 %}
         <div class="empty">
@@ -79,7 +86,7 @@
                 <input style="margin-left: 4px; position: relative; top: 2px" id="zim_xhprof_panel__case_sensitive" type="checkbox" >
             </div>
 
-            <table id="zim_xhprof_panel__table" style="margin-top: 20px">
+            <table id="zim_xhprof_panel__table" style="margin-top: 10px">
                 <thead>
                 <tr>
                     <th>Parent <input id="zim_xhprof_panel__search_parent" type="text" placeholder="Search..." style="padding: 4px 10px 4px 10px" /></th>
